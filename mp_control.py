@@ -22,13 +22,33 @@ def create_configs(c):
     print("Enter the name of project directory (the directory shoult exist in the home directory): ")
     project_dir = input()
 
+    print("Enter the link to the BuildTools.jar (example https://example.com/BuildTools.jar): ")
+    build_tool_link = input()
+
     c["PROJECT_INFO"] = {
         "name": project_name,
-        "dir": home_dir + "/" + project_dir
+        "dir": home_dir + "/" + project_dir,
+        "build_tool_link": build_tool_link
     }
 
     with open(config_dir + "/config", "w") as conf:
         c.write(conf)
+
+def download_build_tool(c):
+    build_tool_dir = c["PROJECT_INFO"]["dir"] + "/build"
+    if path.exists(build_tool_dir):
+        print("Directory for the build tool already exists. Remove it? [y,n]")
+        command = input()
+        if command == 'y':
+            os.system("rm -rf " + build_tool_dir)
+            print("Build tool directory has been removed!")
+	
+    os.mkdir(build_tool_dir)
+    status = os.system("wget -P " + build_tool_dir + " " + c["PROJECT_INFO"]["build_tool_link"])
+    if status != 0:
+        print("Failed to donwload BuildTools.jar!")
+    else:
+        print("BuildTools.jar has been downloaded into the " + build_tool_dir + " directory")
 
 print("MP Minecraft control panel starting...")
 if not check_configs():
@@ -48,11 +68,14 @@ while 1:
     if command == "help":
         message = "\thelp\t- list of commands\n" \
                   "\tclear\t- clear the screen\n" \
-                  "\texit\t- exit from the panel"
+                  "\texit\t- exit from the panel\n" \
+                  "\tbuildtool-download\t- donwload build tool to build spigot"
         print(message)
     elif command == "clear":
         os.system("clear")
     elif command == "exit":
         exit()
+    elif command == "buildtool-donwload":
+        download_build_tool(config_object)
     else:
         print("Command not found")
