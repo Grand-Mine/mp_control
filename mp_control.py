@@ -30,10 +30,29 @@ def create_configs(c):
     with open(config_dir + "/config", "w") as conf:
         c.write(conf)
 
-
 print("MP Minecraft control panel starting...")
 if not check_configs():
     create_configs(config_object)
     print("Configs have been created in " + config_dir + " directory")
 
 config_object.read(config_dir + "/config")
+if not path.exists(config_object["PROJECT_INFO"]["dir"]):
+    os.mkdir(config_object["PROJECT_INFO"]["dir"])
+
+print("Enter the command (for example \"help\")")
+while 1:
+    print(" > ", end='')
+    command = input()
+    message = ""
+    
+    if command == "help":
+        message = "\thelp\t- list of commands\n" \
+                  "\tclear\t- clear the screen\n" \
+                  "\texit\t- exit from the panel"
+        print(message)
+    elif command == "clear":
+        os.system("clear")
+    elif command == "exit":
+        exit()
+    else:
+        print("Command not found")
