@@ -37,11 +37,13 @@ def create_configs(c):
 def download_build_tool(c):
     build_tool_dir = c["PROJECT_INFO"]["dir"] + "/build"
     if path.exists(build_tool_dir):
-        print("Directory for the build tool already exists. Remove it? [y,n]")
+        print("Directory for the build tool already exists. Remove it? [y,n]: ", end='')
         command = input()
         if command == 'y':
             os.system("rm -rf " + build_tool_dir)
             print("Build tool directory has been removed!")
+        else:
+            return
 	
     os.mkdir(build_tool_dir)
     status = os.system("wget -P " + build_tool_dir + " " + c["PROJECT_INFO"]["build_tool_link"])
@@ -49,6 +51,25 @@ def download_build_tool(c):
         print("Failed to donwload BuildTools.jar!")
     else:
         print("BuildTools.jar has been downloaded into the " + build_tool_dir + " directory")
+
+def build_minecraft_spigot(c):
+    print("Enter the needed minecraft version: ", end='')
+    version = input()
+    build_tool_dir = c["PROJECT_INFO"]["dir"] + "/build"
+    spigot_dir = c["PROJECT_INFO"]["dir"] + "/spigot"
+    if not path.exists(build_tool_dir):
+        print("BuildTools.jar not found! Cound it be downloaded? [y,n]: ", end='')
+        command = input()
+        if command == 'y':
+            download_build_tool(c)
+        else:
+            return
+
+    if not path.exists(spigot_dir):
+        os.mkdir(spigot_dir)
+    
+    os.system("cd " + build_tool_dir + "; java -jar BuildTools.jar --rev " + version + "; cd -")
+    os.system("cp " + build_tool_dir + "/spigot-" + version + ".jar " + spigot_dir)
 
 print("MP Minecraft control panel starting...")
 if not check_configs():
@@ -69,7 +90,8 @@ while 1:
         message = "\thelp\t- list of commands\n" \
                   "\tclear\t- clear the screen\n" \
                   "\texit\t- exit from the panel\n" \
-                  "\tbuildtool-download\t- donwload build tool to build spigot"
+                  "\tbuildtool-download\t- donwload build tool to build spigot\n" \
+                  "\tbuild-spigot\t- build the spigot server"
         print(message)
     elif command == "clear":
         os.system("clear")
@@ -77,5 +99,7 @@ while 1:
         exit()
     elif command == "buildtool-donwload":
         download_build_tool(config_object)
+    elif command == "build-spigot":
+        build_minecraft_spigot(config_object)
     else:
         print("Command not found")
