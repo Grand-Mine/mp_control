@@ -40,7 +40,8 @@ def help():
               "\texit\t\t\t- exit from the panel\n" \
               "\tdownload-buildtool\t- donwload build tool to build spigot\n" \
               "\tbuild-spigot\t\t- build the spigot server\n" \
-              "\tavailable-versions\t- get list of available minecraft versions"
+              "\tavailable-versions\t- get list of available minecraft versions\n" \
+              "\tcreate-server\t\t- create minecraft server"
     print(message)
 
 def download_build_tool(c):
@@ -61,9 +62,14 @@ def download_build_tool(c):
     else:
         print("BuildTools.jar has been downloaded into the " + build_tool_dir + " directory")
 
-def build_minecraft_spigot(c):
-    print("Enter the needed minecraft version: ", end='')
-    version = input()
+def build_minecraft_spigot(c, _version="Not Defined"):
+    version = str()
+    if _version == "Not Defined":
+        print("Enter the needed minecraft version: ", end='')
+        version = input()
+    else:
+        version = _version
+
     build_tool_dir = c["PROJECT_INFO"]["dir"] + "/build"
     spigot_dir = c["PROJECT_INFO"]["dir"] + "/spigot"
     if not path.exists(build_tool_dir):
@@ -72,7 +78,7 @@ def build_minecraft_spigot(c):
         if command == 'y':
             download_build_tool(c)
         else:
-            return
+            return -1
 
     if not path.exists(spigot_dir):
         os.mkdir(spigot_dir)
@@ -81,8 +87,10 @@ def build_minecraft_spigot(c):
     
     if not path.exists(build_tool_dir + "/spigot-" + version + ".jar"):
         print("Error of building spigot " + version)
-        return
+        return -1
     os.system("cp " + build_tool_dir + "/spigot-" + version + ".jar " + spigot_dir)
+
+    return 0
 
 def get_list_of_available_versions(c):
     spigot_dir = c["PROJECT_INFO"]["dir"] + "/spigot"
@@ -92,7 +100,39 @@ def get_list_of_available_versions(c):
         versions[i] = versions[i].replace(".jar", "")
     
     print("Available minecraft versions: " + " ".join(versions))
-    return versions
+
+def create_server(c):
+    print("Enter the server name: ", end='')
+    server_name = input()
+
+    print("Enter the server version: ", end='')
+    server_version = input()
+
+    spigot = c["PROJECT_INFO"]["dir"] + "/spigot/spigot-" + server_version + ".jar"
+    servers_dir = c["PROJECT_INFO"]["dir"] + "/servers"
+    server_dir = servers_dir + '/' + server_name
+
+    if not path.exists(servers_dir):
+        os.mkdir(servers_dir)
+
+    if not path.exists(spigot):
+        print("The version " + server_version + " of spigot not available! Build it? [y,n]: ", end='')
+        command = input()
+        if command == 'y':
+            status = build_minecraft_spigot(c, server_version)
+            if status != 0:
+                print("Error of creating server")
+                return
+        else:
+            return        
+
+    if path.exists(server_dir):
+        print("The name \"" + server_name + "\" already exists!")
+        return
+    os.mkdir(server_dir)
+    os.system("cp " + spigot + " " + server_dir)
+    print("Server has been created")
+    
 
 print("MP Minecraft control panel starting...")
 if not check_configs():
@@ -121,5 +161,7 @@ while 1:
         build_minecraft_spigot(config_object)
     elif command == "available-versions":
         get_list_of_available_versions(config_object)
+    elif command == "create-server":
+        create_server(config_object)
     else:
         print("Command not found")
