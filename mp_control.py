@@ -35,11 +35,11 @@ def create_configs(c):
         c.write(conf)
 
 def help():
-    message = "\thelp\t- list of commands\n" \
-              "\tclear\t- clear the screen\n" \
-              "\texit\t- exit from the panel\n" \
+    message = "\thelp\t\t\t- list of commands\n" \
+              "\tclear\t\t\t- clear the screen\n" \
+              "\texit\t\t\t- exit from the panel\n" \
               "\tbuildtool-download\t- donwload build tool to build spigot\n" \
-              "\tbuild-spigot\t- build the spigot server"
+              "\tbuild-spigot\t\t- build the spigot server"
     print(message)
 
 def download_build_tool(c):
