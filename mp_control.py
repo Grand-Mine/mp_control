@@ -39,7 +39,8 @@ def help():
               "\tclear\t\t\t- clear the screen\n" \
               "\texit\t\t\t- exit from the panel\n" \
               "\tdownload-buildtool\t- donwload build tool to build spigot\n" \
-              "\tbuild-spigot\t\t- build the spigot server"
+              "\tbuild-spigot\t\t- build the spigot server\n" \
+              "\tavailable-versions\t- get list of available minecraft versions"
     print(message)
 
 def download_build_tool(c):
@@ -76,8 +77,22 @@ def build_minecraft_spigot(c):
     if not path.exists(spigot_dir):
         os.mkdir(spigot_dir)
     
-    os.system("cd " + build_tool_dir + "; java -jar BuildTools.jar --rev " + version + "; cd -")
+    status = os.system("cd " + build_tool_dir + "; java -jar BuildTools.jar --rev " + version + "; cd -")
+    
+    if not path.exists(build_tool_dir + "/spigot-" + version + ".jar"):
+        print("Error of building spigot " + version)
+        return
     os.system("cp " + build_tool_dir + "/spigot-" + version + ".jar " + spigot_dir)
+
+def get_list_of_available_versions(c):
+    spigot_dir = c["PROJECT_INFO"]["dir"] + "/spigot"
+    versions = os.listdir(spigot_dir)
+    for i in range(len(versions)):
+        versions[i] = versions[i].replace("spigot-", "")
+        versions[i] = versions[i].replace(".jar", "")
+    
+    print("Available minecraft versions: " + " ".join(versions))
+    return versions
 
 print("MP Minecraft control panel starting...")
 if not check_configs():
@@ -104,5 +119,7 @@ while 1:
         download_build_tool(config_object)
     elif command == "build-spigot":
         build_minecraft_spigot(config_object)
+    elif command == "available-versions":
+        get_list_of_available_versions(config_object)
     else:
         print("Command not found")
