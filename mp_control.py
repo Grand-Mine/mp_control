@@ -1,38 +1,8 @@
 #!/usr/bin/python3
 
 import os
+from config import Config
 from os import path
-from os.path import expanduser
-from configparser import ConfigParser
-
-config_object = ConfigParser()
-home_dir = expanduser("~")
-config_dir = home_dir + "/.mp_control"
-
-def check_configs():
-    return path.exists(config_dir)
-
-def create_configs(c):
-    os.mkdir(config_dir)
-    with open(config_dir + "/config", "w"): pass
-
-    print("Enter the name of project: ")
-    project_name = input()
-
-    print("Enter the name of project directory (the directory shoult exist in the home directory): ")
-    project_dir = input()
-
-    print("Enter the link to the BuildTools.jar (example https://example.com/BuildTools.jar): ")
-    build_tool_link = input()
-
-    c["PROJECT_INFO"] = {
-        "name": project_name,
-        "dir": home_dir + "/" + project_dir,
-        "build_tool_link": build_tool_link
-    }
-
-    with open(config_dir + "/config", "w") as conf:
-        c.write(conf)
 
 def help():
     message = "\thelp\t\t\t- list of commands\n" \
@@ -45,7 +15,8 @@ def help():
     print(message)
 
 def download_build_tool(c):
-    build_tool_dir = c["PROJECT_INFO"]["dir"] + "/build"
+    build_tool_dir = c.get_project_dir() + "/build"
+    build_tool_link = c.get_link_to_buildtool()
     if path.exists(build_tool_dir):
         print("Directory for the build tool already exists. Remove it? [y,n]: ", end='')
         command = input()
@@ -54,9 +25,9 @@ def download_build_tool(c):
             print("Build tool directory has been removed!")
         else:
             return
-	
+
     os.mkdir(build_tool_dir)
-    status = os.system("wget -P " + build_tool_dir + " " + c["PROJECT_INFO"]["build_tool_link"])
+    status = os.system("wget -P " + build_tool_dir + " " + build_tool_link)
     if status != 0:
         print("Failed to donwload BuildTools.jar!")
     else:
@@ -70,8 +41,8 @@ def build_minecraft_spigot(c, _version="Not Defined"):
     else:
         version = _version
 
-    build_tool_dir = c["PROJECT_INFO"]["dir"] + "/build"
-    spigot_dir = c["PROJECT_INFO"]["dir"] + "/spigot"
+    build_tool_dir = c.get_project_dir() + "/build"
+    spigot_dir = c.get_project_dir() + "/spigot"
     if not path.exists(build_tool_dir):
         print("BuildTools.jar not found! Cound it be downloaded? [y,n]: ", end='')
         command = input()
@@ -93,7 +64,7 @@ def build_minecraft_spigot(c, _version="Not Defined"):
     return 0
 
 def get_list_of_available_versions(c):
-    spigot_dir = c["PROJECT_INFO"]["dir"] + "/spigot"
+    spigot_dir = c.get_project_dir() + "/spigot"
     versions = os.listdir(spigot_dir)
     for i in range(len(versions)):
         versions[i] = versions[i].replace("spigot-", "")
@@ -108,8 +79,8 @@ def create_server(c):
     print("Enter the server version: ", end='')
     server_version = input()
 
-    spigot = c["PROJECT_INFO"]["dir"] + "/spigot/spigot-" + server_version + ".jar"
-    servers_dir = c["PROJECT_INFO"]["dir"] + "/servers"
+    spigot = c.get_project_dir() + "/spigot/spigot-" + server_version + ".jar"
+    servers_dir = c.get_project_dir() + "/servers"
     server_dir = servers_dir + '/' + server_name
 
     if not path.exists(servers_dir):
@@ -135,13 +106,9 @@ def create_server(c):
     
 
 print("MP Minecraft control panel starting...")
-if not check_configs():
-    create_configs(config_object)
-    print("Configs have been created in " + config_dir + " directory")
-
-config_object.read(config_dir + "/config")
-if not path.exists(config_object["PROJECT_INFO"]["dir"]):
-    os.mkdir(config_object["PROJECT_INFO"]["dir"])
+config_object = Config()
+if not path.exists(config_object.get_project_dir()):
+    os.mkdir(config_object.get_project_dir())
 
 print("Enter the command (for example \"help\")")
 while 1:
