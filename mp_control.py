@@ -38,7 +38,7 @@ def help():
     message = "\thelp\t\t\t- list of commands\n" \
               "\tclear\t\t\t- clear the screen\n" \
               "\texit\t\t\t- exit from the panel\n" \
-              "\tbuildtool-download\t- donwload build tool to build spigot\n" \
+              "\tdownload-buildtool\t- donwload build tool to build spigot\n" \
               "\tbuild-spigot\t\t- build the spigot server"
     print(message)
 
@@ -100,7 +100,7 @@ while 1:
         os.system("clear")
     elif command == "exit":
         exit()
-    elif command == "buildtool-donwload":
+    elif command == "donwload-buildtool":
         download_build_tool(config_object)
     elif command == "build-spigot":
         build_minecraft_spigot(config_object)
