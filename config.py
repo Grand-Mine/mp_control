@@ -42,7 +42,7 @@ class Config:
     def get_link_to_buildtool(self):
         return self._config["PROJECT_INFO"]["build_tool_link"]
 
-    def __init__(self):
+    def init(self):
         if not self._check_config():
             self.create_configs()
             print("Configs have been created in " + self._config_dir + " directory")
