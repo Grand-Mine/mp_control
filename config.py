@@ -15,13 +15,13 @@ class Config:
         os.mkdir(self._config_dir)
         with open(self._config_dir + "/config", "w"): pass
 
-        print("Enter the name of project: ")
+        print("Enter the name of project: ", end='')
         project_name = input()
 
-        print("Enter the name of project directory (the directory shoult exist in the home directory): ")
+        print("Enter the name of project directory (the directory shoult exist in the home directory): ", end='')
         project_dir = input()
 
-        print("Enter the link to the BuildTools.jar (example https://example.com/BuildTools.jar): ")
+        print("Enter the link to the BuildTools.jar (example https://example.com/BuildTools.jar): ", end='')
         build_tool_link = input()
 
         self._config["PROJECT_INFO"] = {
