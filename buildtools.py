@@ -59,7 +59,11 @@ class BuildTools:
 
     def get_versions(self):
         spigot_dir = self._config.get_project_dir() + "/spigot"
-        versions = os.listdir(spigot_dir)
+        try:
+            versions = os.listdir(spigot_dir)
+        except IOError:
+            versions = [""]
+
         for i in range(len(versions)):
             versions[i] = versions[i].replace("spigot-", "")
             versions[i] = versions[i].replace(".jar", "")

@@ -42,7 +42,7 @@ while 1:
     elif command == "build-spigot":
         build_tools.build()
     elif command == "available-versions":
-        build_tools.versions(config_object)
+        build_tools.get_versions()
     elif command == "create-server":
         server.create(build_tools)
     else:
