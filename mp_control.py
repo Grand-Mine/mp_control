@@ -3,6 +3,7 @@
 import os
 from os import path
 from config import Config
+from server import Server
 from buildtools import BuildTools
 
 def help():
@@ -15,39 +16,6 @@ def help():
               "\tcreate-server\t\t- create minecraft server"
     print(message)
 
-def create_server(c):
-    print("Enter the server name: ", end='')
-    server_name = input()
-
-    print("Enter the server version: ", end='')
-    server_version = input()
-
-    spigot = c.get_project_dir() + "/spigot/spigot-" + server_version + ".jar"
-    servers_dir = c.get_project_dir() + "/servers"
-    server_dir = servers_dir + '/' + server_name
-
-    if not path.exists(servers_dir):
-        os.mkdir(servers_dir)
-
-    if not path.exists(spigot):
-        print("The version " + server_version + " of spigot not available! Build it? [y,n]: ", end='')
-        command = input()
-        if command == 'y':
-            status = build_tools.build(server_version)
-            if status != 0:
-                print("Error of creating server")
-                return
-        else:
-            return        
-
-    if path.exists(server_dir):
-        print("The name \"" + server_name + "\" already exists!")
-        return
-    os.mkdir(server_dir)
-    os.system("cp " + spigot + " " + server_dir)
-    print("Server has been created")
-    
-
 print("MP Minecraft control panel starting...")
 config_object = Config()
 config_object.init()
@@ -55,6 +23,7 @@ if not path.exists(config_object.get_project_dir()):
     os.mkdir(config_object.get_project_dir())
 
 build_tools = BuildTools(config_object)
+server = Server(config_object)
 
 print("Enter the command (for example \"help\")")
 while 1:
@@ -75,6 +44,6 @@ while 1:
     elif command == "available-versions":
         build_tools.versions(config_object)
     elif command == "create-server":
-        create_server(config_object)
+        server.create(build_tools)
     else:
         print("Command not found")
