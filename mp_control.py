@@ -5,6 +5,7 @@ from os import path
 from config import Config
 from server import Server
 from buildtools import BuildTools
+from command import Command
 
 def help():
     message = "\thelp\t\t\t- list of commands\n" \
@@ -17,18 +18,19 @@ def help():
     print(message)
 
 print("MP Minecraft control panel starting...")
+command_c = Command()
 config_object = Config()
-config_object.init()
+config_object.init(command_c)
 if not path.exists(config_object.get_project_dir()):
     os.mkdir(config_object.get_project_dir())
 
-build_tools = BuildTools(config_object)
-server = Server(config_object)
+build_tools = BuildTools(config_object, command_c)
+server = Server(config_object, command_c)
 
 print("Enter the command (for example \"help\")")
 while 1:
     print(" > ", end='')
-    command = input()
+    command = command_c.write()
     message = ""
     
     if command == "help":

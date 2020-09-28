@@ -2,19 +2,22 @@ import os
 from os import path
 from config import Config
 from buildtools import BuildTools
+from command import Command
 
 class Server:
     _config = Config()
+    _command = Command()
 
-    def __init__(self, config):
-        _config = config
+    def __init__(self, config, command):
+        self._config = config
+        self._command = command
 
     def create(self, build_tools):
         print("Enter the server name: ", end='')
-        server_name = input()
+        server_name = self._command.write()
 
         print("Enter the server version: ", end='')
-        server_version = input()
+        server_version = self._command.write()
 
         spigot = self._config.get_project_dir() + "/spigot/spigot-" + server_version + ".jar"
         servers_dir = self._config.get_project_dir() + "/servers"
@@ -25,7 +28,7 @@ class Server:
 
         if not path.exists(spigot):
             print("The version " + server_version + " of spigot not available! Build it? [y,n]: ", end='')
-            command = input()
+            command = self._command.write()
             if command == 'y':
                 status = build_tools.build(server_version)
                 if status != 0:

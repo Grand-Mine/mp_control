@@ -2,11 +2,13 @@ import os
 from os import path
 from os.path import expanduser
 from configparser import ConfigParser
+from command import Command
 
 class Config:
     _config = ConfigParser()
     _home_dir = expanduser("~")
     _config_dir = _home_dir + "/.mp_control"
+    _command = Command()
 
     def _check_config(self):
         return path.exists(self._config_dir)
@@ -16,13 +18,13 @@ class Config:
         with open(self._config_dir + "/config", "w"): pass
 
         print("Enter the name of project: ", end='')
-        project_name = input()
+        project_name = self._command.write()
 
         print("Enter the name of project directory (the directory shoult exist in the home directory): ", end='')
-        project_dir = input()
+        project_dir = self._command.write()
 
         print("Enter the link to the BuildTools.jar (example https://example.com/BuildTools.jar): ", end='')
-        build_tool_link = input()
+        build_tool_link = self._command.write()
 
         self._config["PROJECT_INFO"] = {
             "name": project_name,
@@ -42,7 +44,8 @@ class Config:
     def get_link_to_buildtool(self):
         return self._config["PROJECT_INFO"]["build_tool_link"]
 
-    def init(self):
+    def init(self, command):
+        self._command = command
         if not self._check_config():
             self.create_configs()
             print("Configs have been created in " + self._config_dir + " directory")

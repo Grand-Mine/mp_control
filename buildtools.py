@@ -1,19 +1,22 @@
 import os
 from os import path
 from config import Config
+from command import Command
 
 class BuildTools:
     _config = Config()
+    _command = Command()
 
-    def __init__(self, config):
+    def __init__(self, config, command):
         self._config = config
+        self._command = command
 
     def download(self):
         build_tool_dir = self._config.get_project_dir() + "/build"
         build_tool_link = self._config.get_link_to_buildtool()
         if path.exists(build_tool_dir):
             print("Directory for the build tool already exists. Remove it? [y,n]: ", end='')
-            command = input()
+            command = self._command.write()
             if command == 'y':
                 os.system("rm -rf " + build_tool_dir)
                 print("Build tool directory has been removed!")
@@ -31,7 +34,7 @@ class BuildTools:
         version = str()
         if _version == "Not Defined":
             print("Enter the needed minecraft version: ", end='')
-            version = input()
+            version = self._command.write()
         else:
             version = _version
 
@@ -39,7 +42,7 @@ class BuildTools:
         spigot_dir = self._config.get_project_dir() + "/spigot"
         if not path.exists(build_tool_dir):
             print("BuildTools.jar not found! Cound it be downloaded? [y,n]: ", end='')
-            command = input()
+            command = self._command.write()
             if command == 'y':
                 self.download()
             else:
