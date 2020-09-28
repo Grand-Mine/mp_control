@@ -14,7 +14,8 @@ def help():
               "\tdownload-buildtool\t- donwload build tool to build spigot\n" \
               "\tbuild-spigot\t\t- build the spigot server\n" \
               "\tavailable-versions\t- get list of available minecraft versions\n" \
-              "\tcreate-server\t\t- create minecraft server"
+              "\tcreate-server\t\t- create minecraft server\n" \
+              "\thistory\t\t\t- history of writted commands"
     print(message)
 
 print("MP Minecraft control panel starting...")
@@ -47,5 +48,7 @@ while 1:
         build_tools.get_versions()
     elif command == "create-server":
         server.create(build_tools)
+    elif command == "history":
+        command_c.history()
     else:
         print("Command not found")

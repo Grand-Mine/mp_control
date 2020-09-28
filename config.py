@@ -51,3 +51,4 @@ class Config:
             print("Configs have been created in " + self._config_dir + " directory")
 
         self._config.read(self._config_dir + "/config")
+        self._command.set_history_path(self._config_dir)
