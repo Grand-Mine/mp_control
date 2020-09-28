@@ -39,5 +39,5 @@ class Server:
             return
         os.mkdir(server_dir)
         os.system("cp " + spigot + " " + server_dir)
+        os.system("echo eula=true > " + server_dir + "/eula.txt")
         print("Server has been created")
-
