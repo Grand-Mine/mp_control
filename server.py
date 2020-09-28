@@ -40,4 +40,5 @@ class Server:
         os.mkdir(server_dir)
         os.system("cp " + spigot + " " + server_dir)
         os.system("echo eula=true > " + server_dir + "/eula.txt")
+        os.system("echo java -Xms2G -Xmx2G -XX:+UseG1GC -jar spigot-" + server_version + ".jar nogui > " + server_dir + "/wrapper.sh")
         print("Server has been created")
