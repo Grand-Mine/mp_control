@@ -1,5 +1,6 @@
 import sys
 import threading
+from os import path
 from os.path import expanduser
 from getkey import getkey, keys
 
@@ -46,8 +47,11 @@ class CLI:
         with open(self._history_path, 'r') as history_file:
             self.out(history_file.read())
 
-    def set_history_path(self, path):
-        self._history_path = path + "/history"
+    def set_history_path(self, history_path):
+        self._history_path = history_path + "/history"
+        if not path.exists(self._history_path):
+            with open(self._history_path, 'w'): pass
+
         with open(self._history_path, 'r') as history:
             for line in history:
                 self._history.append(line[:-1])
