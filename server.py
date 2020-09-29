@@ -45,3 +45,33 @@ class Server:
         os.system("echo eula=true > " + server_dir + "/eula.txt")
         os.system("echo java -Xms2G -Xmx2G -XX:+UseG1GC -jar spigot-" + server_version + ".jar nogui > " + server_dir + "/wrapper.sh")
         self._cli.out("Server has been created")
+
+    def lunch(self):
+        self._cli.out("Enter the server name: ", end='')
+        server_name = self._cli.get_command()
+        server_dir = self._config.get_project_dir() + "/servers/" + server_name
+
+        if not path.exists(server_dir):
+            self._cli.out("Server [" + server_name + "] not found")
+            return
+
+        os.system("cd " + server_dir + "; screen -S mp_control_" + server_name)
+
+    def stop(self):
+        self._cli.out("Enter the server name: ", end='')
+        server_name = self._cli.get_command()
+
+        status = os.system("screen -S mp_control_" + server_name + " -X quit")
+        if status != 0:
+            self._cli.out("Failed to stop the server " + server_name)
+            return
+
+        self._cli.out("The server " + server_name + " has been stopped")
+
+    def show(self):
+        self._cli.out("Enter the server name: ", end='')
+        server_name = self._cli.get_command()
+
+        status = os.system("screen -r mp_control_" + server_name)
+        if status != 0:
+            self._cli.out("Failed to show the server console for the server " + server_name)

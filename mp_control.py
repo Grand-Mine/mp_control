@@ -15,7 +15,10 @@ def help():
               "\tbuild-spigot\t\t- build the spigot server\n" \
               "\tavailable-versions\t- get list of available minecraft versions\n" \
               "\tcreate-server\t\t- create minecraft server\n" \
-              "\thistory\t\t\t- history of writted commands\n"
+              "\thistory\t\t\t- history of writted commands\n" \
+              "\tlunch\t\t\t- lunch the minecraft server\n" \
+              "\tstop\t\t\t- stop the minecraft server\n" \
+              "\tshow\t\t\t- show the server console\n"
     print(message, end='')
 
 print("MP Minecraft control panel starting...")
@@ -50,5 +53,11 @@ while 1:
         server.create(build_tools)
     elif command == "history":
         cli.history()
+    elif command == "lunch":
+        server.lunch()
+    elif command == "stop":
+        server.stop()
+    elif command == "show":
+        server.show()
     else:
         cli.out("Command not found")
