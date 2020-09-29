@@ -44,7 +44,7 @@ while 1:
         os.system("clear")
     elif command == "exit":
         exit()
-    elif command == "donwload-buildtool":
+    elif command == "download-buildtool":
         build_tools.download()
     elif command == "build-spigot":
         build_tools.build()
