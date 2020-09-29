@@ -14,10 +14,10 @@ class Server:
 
     def create(self, build_tools):
         self._cli.out("Enter the server name: ", end='')
-        server_name = self._cli.get_command()
+        server_name = input()
 
         self._cli.out("Enter the server version: ", end='')
-        server_version = self._cli.get_command()
+        server_version = input()
 
         spigot = self._config.get_project_dir() + "/spigot/spigot-" + server_version + ".jar"
         servers_dir = self._config.get_project_dir() + "/servers"
@@ -28,7 +28,7 @@ class Server:
 
         if not path.exists(spigot):
             self._cli.out("The version " + server_version + " of spigot not available! Build it? [y,n]: ", end='')
-            command = self._cli.get_command()
+            command = input()
             if command == 'y':
                 status = build_tools.build(server_version)
                 if status != 0:
@@ -48,7 +48,7 @@ class Server:
 
     def lunch(self):
         self._cli.out("Enter the server name: ", end='')
-        server_name = self._cli.get_command()
+        server_name = input()
         server_dir = self._config.get_project_dir() + "/servers/" + server_name
 
         if not path.exists(server_dir):
@@ -59,7 +59,7 @@ class Server:
 
     def stop(self):
         self._cli.out("Enter the server name: ", end='')
-        server_name = self._cli.get_command()
+        server_name = input()
 
         status = os.system("screen -S mp_control_" + server_name + " -X quit")
         if status != 0:
@@ -70,7 +70,7 @@ class Server:
 
     def show(self):
         self._cli.out("Enter the server name: ", end='')
-        server_name = self._cli.get_command()
+        server_name = input()
 
         status = os.system("screen -r mp_control_" + server_name)
         if status != 0:

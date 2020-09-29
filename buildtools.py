@@ -16,7 +16,7 @@ class BuildTools:
         build_tool_link = self._config.get_link_to_buildtool()
         if path.exists(build_tool_dir):
             self._cli.out("Directory for the build tool already exists. Remove it? [y,n]: ", end='')
-            command = self._cli.get_command()
+            command = input()
             if command == 'y':
                 os.system("rm -rf " + build_tool_dir)
                 self._cli.out("Build tool directory has been removed!")
@@ -34,7 +34,7 @@ class BuildTools:
         version = str()
         if _version == "Not Defined":
             self._cli.out("Enter the needed minecraft version: ", end='')
-            version = self._cli.get_command()
+            version = input()
         else:
             version = _version
 
@@ -42,7 +42,7 @@ class BuildTools:
         spigot_dir = self._config.get_project_dir() + "/spigot"
         if not path.exists(build_tool_dir):
             self._cli.out("BuildTools.jar not found! Cound it be downloaded? [y,n]: ", end='')
-            command = self._cli.get_command()
+            command = input()
             if command == 'y':
                 self.download()
             else:

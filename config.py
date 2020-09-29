@@ -18,13 +18,13 @@ class Config:
         with open(self._config_dir + "/config", "w"): pass
 
         self._cli.out("Enter the name of project: ", end='')
-        project_name = self._cli.get_command()
+        project_name = input()
 
         self._cli.out("Enter the name of project directory (the directory shoult exist in the home directory): ", end='')
-        project_dir = self._cli.get_command()
+        project_dir = input()
 
         self._cli.out("Enter the link to the BuildTools.jar (example https://example.com/BuildTools.jar): ", end='')
-        build_tool_link = self._cli.get_command()
+        build_tool_link = input()
 
         self._config["PROJECT_INFO"] = {
             "name": project_name,
