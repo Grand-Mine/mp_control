@@ -18,7 +18,8 @@ def help():
               "\thistory\t\t\t- history of writted commands\n" \
               "\tlunch\t\t\t- lunch the minecraft server\n" \
               "\tstop\t\t\t- stop the minecraft server\n" \
-              "\tshow\t\t\t- show the server console\n"
+              "\tshow\t\t\t- show the server console\n" \
+              "\tlist\t\t\t- list of servers\n"
     print(message, end='')
 
 print("MP Minecraft control panel starting...")
@@ -59,5 +60,7 @@ while 1:
         server.stop()
     elif command == "show":
         server.show()
+    elif command == "list":
+        server.list()
     else:
         cli.out("Command not found")

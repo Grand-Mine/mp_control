@@ -75,3 +75,7 @@ class Server:
         status = os.system("screen -r mp_control_" + server_name)
         if status != 0:
             self._cli.out("Failed to show the server console for the server " + server_name)
+
+    def list(self):
+        servers_dir = self._config.get_project_dir() + "/servers"
+        self._cli.out(str(os.listdir(servers_dir)))
