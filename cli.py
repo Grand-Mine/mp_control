@@ -15,11 +15,17 @@ class CLI:
             if key == keys.ENTER:
                 self.out('')
                 return command
-            if key == keys.BACKSPACE:
+            elif key == keys.BACKSPACE:
                 if len(command) == 0:
                     continue
                 self.out('\b \b', end='')
                 command = command[:-1]
+            elif key == keys.UP:
+                try:
+                    command = self._history.pop()
+                    self.out(command, end='')
+                except Exception:
+                    self.out("History is empty")
             else:
                 command += key
                 self.out(key, end='')
@@ -42,6 +48,9 @@ class CLI:
 
     def set_history_path(self, path):
         self._history_path = path + "/history"
+        with open(self._history_path, 'r') as history:
+            for line in history:
+                self._history.append(line[:-1])
 
     def out(self, message, end='\n'):
         for char in message:
