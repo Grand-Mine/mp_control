@@ -78,4 +78,8 @@ class Server:
 
     def list(self):
         servers_dir = self._config.get_project_dir() + "/servers"
-        self._cli.out(str(os.listdir(servers_dir)))
+    
+        try:
+            self._cli.out(str(os.listdir(servers_dir)))
+        except Exception:
+            self._cli.out("Not found any servers")
