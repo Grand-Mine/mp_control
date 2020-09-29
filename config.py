@@ -2,13 +2,13 @@ import os
 from os import path
 from os.path import expanduser
 from configparser import ConfigParser
-from command import Command
+from cli import CLI
 
 class Config:
     _config = ConfigParser()
     _home_dir = expanduser("~")
     _config_dir = _home_dir + "/.mp_control"
-    _command = Command()
+    _cli = CLI()
 
     def _check_config(self):
         return path.exists(self._config_dir)
@@ -17,14 +17,14 @@ class Config:
         os.mkdir(self._config_dir)
         with open(self._config_dir + "/config", "w"): pass
 
-        print("Enter the name of project: ", end='')
-        project_name = self._command.write()
+        self._cli.out("Enter the name of project: ", end='')
+        project_name = self._cli.get_command()
 
-        print("Enter the name of project directory (the directory shoult exist in the home directory): ", end='')
-        project_dir = self._command.write()
+        self._cli.out("Enter the name of project directory (the directory shoult exist in the home directory): ", end='')
+        project_dir = self._cli.get_command()
 
-        print("Enter the link to the BuildTools.jar (example https://example.com/BuildTools.jar): ", end='')
-        build_tool_link = self._command.write()
+        self._cli.out("Enter the link to the BuildTools.jar (example https://example.com/BuildTools.jar): ", end='')
+        build_tool_link = self._cli.get_command()
 
         self._config["PROJECT_INFO"] = {
             "name": project_name,
@@ -44,11 +44,11 @@ class Config:
     def get_link_to_buildtool(self):
         return self._config["PROJECT_INFO"]["build_tool_link"]
 
-    def init(self, command):
-        self._command = command
+    def init(self, cli):
+        self._cli = cli
         if not self._check_config():
             self.create_configs()
-            print("Configs have been created in " + self._config_dir + " directory")
+            self._cli.out("Configs have been created in " + self._config_dir + " directory")
 
         self._config.read(self._config_dir + "/config")
-        self._command.set_history_path(self._config_dir)
+        self._cli.set_history_path(self._config_dir)

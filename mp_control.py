@@ -5,7 +5,7 @@ from os import path
 from config import Config
 from server import Server
 from buildtools import BuildTools
-from command import Command
+from cli import CLI
 
 def help():
     message = "\thelp\t\t\t- list of commands\n" \
@@ -15,23 +15,23 @@ def help():
               "\tbuild-spigot\t\t- build the spigot server\n" \
               "\tavailable-versions\t- get list of available minecraft versions\n" \
               "\tcreate-server\t\t- create minecraft server\n" \
-              "\thistory\t\t\t- history of writted commands"
-    print(message)
+              "\thistory\t\t\t- history of writted commands\n"
+    print(message, end='')
 
 print("MP Minecraft control panel starting...")
-command_c = Command()
+cli = CLI()
 config_object = Config()
-config_object.init(command_c)
+config_object.init(cli)
 if not path.exists(config_object.get_project_dir()):
     os.mkdir(config_object.get_project_dir())
 
-build_tools = BuildTools(config_object, command_c)
-server = Server(config_object, command_c)
+build_tools = BuildTools(config_object, cli)
+server = Server(config_object, cli)
 
 print("Enter the command (for example \"help\")")
 while 1:
-    print(" > ", end='')
-    command = command_c.write()
+    cli.out(" > ", end='')
+    command = cli.get_command()
     message = ""
     
     if command == "help":
@@ -49,6 +49,6 @@ while 1:
     elif command == "create-server":
         server.create(build_tools)
     elif command == "history":
-        command_c.history()
+        cli.history()
     else:
-        print("Command not found")
+        cli.out("Command not found")

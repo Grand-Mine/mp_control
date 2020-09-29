@@ -1,23 +1,23 @@
 import os
 from os import path
+from cli import CLI
 from config import Config
 from buildtools import BuildTools
-from command import Command
 
 class Server:
     _config = Config()
-    _command = Command()
+    _cli = CLI()
 
-    def __init__(self, config, command):
+    def __init__(self, config, cli):
         self._config = config
-        self._command = command
+        self._cli = cli
 
     def create(self, build_tools):
-        print("Enter the server name: ", end='')
-        server_name = self._command.write()
+        self._cli.out("Enter the server name: ", end='')
+        server_name = self._cli.get_command()
 
-        print("Enter the server version: ", end='')
-        server_version = self._command.write()
+        self._cli.out("Enter the server version: ", end='')
+        server_version = self._cli.get_command()
 
         spigot = self._config.get_project_dir() + "/spigot/spigot-" + server_version + ".jar"
         servers_dir = self._config.get_project_dir() + "/servers"
@@ -27,21 +27,21 @@ class Server:
             os.mkdir(servers_dir)
 
         if not path.exists(spigot):
-            print("The version " + server_version + " of spigot not available! Build it? [y,n]: ", end='')
-            command = self._command.write()
+            self._cli.out("The version " + server_version + " of spigot not available! Build it? [y,n]: ", end='')
+            command = self._cli.get_command()
             if command == 'y':
                 status = build_tools.build(server_version)
                 if status != 0:
-                    print("Error of creating server")
+                    self._cli.out("Error of creating server")
                     return
             else:
                 return        
 
         if path.exists(server_dir):
-            print("The name \"" + server_name + "\" already exists!")
+            self._cli.out("The name \"" + server_name + "\" already exists!")
             return
         os.mkdir(server_dir)
         os.system("cp " + spigot + " " + server_dir)
         os.system("echo eula=true > " + server_dir + "/eula.txt")
         os.system("echo java -Xms2G -Xmx2G -XX:+UseG1GC -jar spigot-" + server_version + ".jar nogui > " + server_dir + "/wrapper.sh")
-        print("Server has been created")
+        self._cli.out("Server has been created")
